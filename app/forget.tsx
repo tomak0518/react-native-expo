@@ -1,5 +1,6 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Image,
     StyleSheet,
@@ -10,6 +11,20 @@ import {
 } from "react-native";
 
 export default function ForgotPassword() {
+    useEffect(() => {
+        const fetchUser = async () => {
+          try {
+            const user = await AsyncStorage.getItem("user");
+            if(user != undefined || user != null){
+                router.replace("/");
+            }
+          } catch (error) {
+            console.error("Error reading user data", error);
+          }
+        };
+      
+        fetchUser(); // 👈 call it here
+      }, []);
     const [email, setEmail] = useState("");
 
     const handleSendEmail = () => {
@@ -64,9 +79,9 @@ const styles = StyleSheet.create({
     },
     image: {
         width: '100%',
-        height: 160,
+        height: 300,
         marginBottom: 20,
-        objectFit: 'contain',
+        objectFit: 'fill',
     },
     title: {
         fontSize: 26,

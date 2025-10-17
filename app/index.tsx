@@ -1,14 +1,29 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
-import React from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function HomeScreen() {
     const router = useRouter();
-
+    useEffect(() => {
+        const fetchUser = async () => {
+          try {
+            const user = await AsyncStorage.getItem("user");
+            if(user == undefined || user == null){
+                router.replace("/login");
+            }
+          } catch (error) {
+            console.error("Error reading user data", error);
+          }
+        };
+      
+        fetchUser(); // 👈 call it here
+      }, []); // 👈 empty dependency array = runs once
     const handleSecondScreen = () => {
 
     };
-    const handleLogout = () => {
+    const handleLogout = async() => {
+        await AsyncStorage.removeItem("user");
         router.replace("/login"); // navigate back to login page
     };
 
